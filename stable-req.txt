@@ -1,0 +1,4 @@
+nose
+nose-testconfig
+requests
+selenium
