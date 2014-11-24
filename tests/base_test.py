@@ -40,7 +40,7 @@ class BaseTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if not 'debug' in config and cls.driver:
+        if 'debug' not in config and cls.driver:
             cls.driver.quit()
 
     def get_screenshot(self):

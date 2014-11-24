@@ -1,13 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from helpers.waits import *
-from pages.login_page import LoginPage
-from views.archive_view import ArchiveView
-from views.help_view import HelpView
-from views.my_tasks_view import MyTasksView
-from views.plans_list_view import PlansListView
-from views.settings_view import SettingsView
-from views.users_view import UsersView
+from helpers.waits import wait_until_extjs
+from pages.main_page import MainPage
 
 
 class BaseView(object):
@@ -17,38 +11,22 @@ class BaseView(object):
         """
         @type driver: WebDriver
         """
-
-    def navigate_my_tasks_view(self):
-        self.driver.find_element_by_xpath("//span[.='Мои задачи']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return MyTasksView(self)
+        wait_until_extjs(self.driver, 20)
 
     def navigate_plans_list_view(self):
-        self.driver.find_element_by_xpath("//span[.='Список планов']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return PlansListView(self)
+        return MainPage(self.driver).navigate_plans_list_view()
+
+    def navigate_my_tasks_view(self):
+        return MainPage(self.driver).navigate_my_tasks_view()
 
     def navigate_users_view(self):
-        self.driver.find_element_by_xpath("//span[.='Пользователи']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return UsersView(self)
+        return MainPage(self.driver).navigate_users_view()
 
     def navigate_archive_view(self):
-        self.driver.find_element_by_xpath("//span[.='Архив']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return ArchiveView(self)
+        return MainPage(self.driver).navigate_archive_view()
 
     def navigate_settings_view(self):
-        self.driver.find_element_by_xpath("//span[.='Настройки']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return SettingsView(self)
+        return MainPage(self.driver).navigate_settings_view()
 
     def navigate_help_view(self):
-        self.driver.find_element_by_xpath("//span[.='Справка']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return HelpView(self)
-
-    def logout(self):
-        self.driver.find_element_by_xpath("//span[.='Выход']/ancestor::a").click()
-        wait_until_extjs(self.driver, 10)
-        return LoginPage(self)
+        return MainPage(self.driver).navigate_help_view()

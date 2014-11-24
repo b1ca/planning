@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
-from views.base_view import BaseView
+from base_view import BaseView
 
 
 class ArchiveView(BaseView):
