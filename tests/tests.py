@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from base_test import BaseTest
-from helpers.waits import *
+from views.plans_list_view import PlansListView
 
 
 class PlanningTestCase(BaseTest):
@@ -9,56 +9,38 @@ class PlanningTestCase(BaseTest):
     def test_create_new_plan(self):  # 1) Сценарий «Создание Нового плана»
         plans_view = self.current_view.navigate_plans_list_view()
         edit_plan_view = plans_view.create_new_plan()
-        # assert edit_plan_view.plan_information_is_ok()
-        # current_view = edit_plan_view.close()
-
-        # wait_until_extjs(self.driver, 10)
-        # plans_view.navigate_users_view()
-        # wait_until_extjs(self.driver, 10)
-        # plans_view.navigate_my_tasks_view()
-        # wait_until_extjs(self.driver, 10)
-        # plans_view.driver.execute_script('alert()')
-
-        # plan_params = {}
-        # edit_plan_view = plans_view.create_plan(plan_params)
-        # assert edit_plan_view.plan_information_is_ok(plan_params)
-        # current_view = edit_plan_view.close()
-        # assert isinstance(current_view, PlansListView)
+        assert edit_plan_view.plan_information_is_ok()
+        current_view = edit_plan_view.close()
+        assert isinstance(current_view, PlansListView)
 
     # def test_edit_new_plan_1(self):  # 2) Сценарий «Редактирования Нового плана»  - 1 способ
     #     plans_view = self.current_view.navigate_plans_list_view()
-    #     plan_params = {}
-    #     edit_plan_view = plans_view.create_plan(plan_params)
-    #     new_plan_params = {}
-    #     edit_plan_view.change_plan(new_plan_params)
+    #     edit_plan_view = plans_view.create_plan()
+    #     edit_plan_view.change_plan()
     #     edit_plan_view.save_btn_click()
     #     edit_plan_view.close()
     #     plans_view = edit_plan_view.save_plan()
-    #     assert plans_view.have_plan(new_plan_params)
+    #     assert plans_view.have_changed_plan()
     #
     # def test_edit_new_plan_2(self):  # 3) Сценарий «Редактирования Нового плана»  - 2 способ
     #     plans_view = self.current_view.navigate_plans_list_view()
-    #     plan_params = {}
-    #     edit_plan_view = plans_view.create_plan(plan_params)
-    #     new_plan_params = {}
-    #     edit_plan_view.change_plan(new_plan_params)
+    #     edit_plan_view = plans_view.create_plan()
+    #     edit_plan_view.change_plan()
     #     edit_plan_view.save_btn_click()
     #     edit_plan_view.save_plan()
     #     plans_view = edit_plan_view.navigate_plans_list_view()
-    #     assert plans_view.have_plan(new_plan_params)
+    #     assert plans_view.have_changed_plan()
     #
     # def test_edit_new_plan_3(self):  # 4) Сценарий «Редактирования Нового плана»  - 3 способ
     #     plans_view = self.current_view.navigate_plans_list_view()
-    #     plan_params = {}
-    #     edit_plan_view = plans_view.create_plan(plan_params)
+    #     edit_plan_view = plans_view.create_plan()
     #     plans_view = edit_plan_view.close()
-    #     edit_plan_view = plans_view.navigate_edit_view(plan_params)
-    #     new_plan_params = {}
-    #     edit_plan_view.change_plan(new_plan_params)
+    #     edit_plan_view = plans_view.navigate_edit_view()
+    #     edit_plan_view.change_plan()
     #     edit_plan_view.save_btn_click()
     #     edit_plan_view.save_plan()
     #     plans_view = edit_plan_view.navigate_plans_list_view()
-    #     assert plans_view.have_plan(new_plan_params)
+    #     assert plans_view.have_changed_plan()
     #
     # def test_add_task_to_new_plan(self):  # 5) Сценарий «Добавление задачи в новый план»
     #     pass

@@ -1,7 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
+from selenium.webdriver import ActionChains
 from views.base_view import BaseView
-from helpers.waits import wait_until_extjs
+from helpers.waits import wait_until_extjs, wait_until_url_contains
 import time
 import random
 
@@ -18,6 +19,7 @@ class PlansListView(BaseView):
         plan = Plan(self.driver)
         plan.get_calendar_and_task(plan_form)
         plan.fill_form()
+        self.plan = plan
         return EditPlanView(self.driver)
 
 
@@ -49,16 +51,34 @@ class Plan(object):
         wait_until_extjs(self.driver, 10)
         calendar_list = self.driver.find_elements_by_xpath("//li[contains(@class,'x-boundlist-item')]")
         calendar = random.choice(calendar_list)
-        calendar.click()
         self.calendar = calendar.get_attribute('innerHTML')
-        plan_form.find_element_by_xpath("//input[@name='AssociatedTaskId']/ancestor::tr//div[@role='button']").click()
+        ActionChains(self.driver).double_click(calendar).perform()
         wait_until_extjs(self.driver, 10)
+
+        plan_form.find_element_by_xpath("//input[@name='AssociatedTaskId']/ancestor::tr//div[@role='button']").click()
+        time.sleep(1)
         task_list = self.driver.find_elements_by_xpath("//li[contains(@class,'x-boundlist-item')]")
         task_list = list(set(task_list) - set(calendar_list))
         task = random.choice(task_list)
-        task.click()
         self.task = task.get_attribute('innerHTML')
+        ActionChains(self.driver).move_to_element(task).double_click(task).perform()
+        wait_until_extjs(self.driver, 10)
 
 
 class EditPlanView(BaseView):
-    pass
+    def __init__(self, driver):
+        BaseView.__init__(self, driver)
+        wait_until_url_contains(self.driver, 10, 'EditPlan')
+        wait_until_extjs(self.driver, 10)
+
+    def save_plan(self):
+        pass
+
+    def get_info(self):
+        pass
+
+    def plan_information_is_ok(self):
+        pass
+
+    def close(self):
+        pass
