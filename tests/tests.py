@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from base_test import BaseTest
-from views.plans_list_view import PlansListView
 
 
 class PlanningTestCase(BaseTest):
@@ -11,7 +10,7 @@ class PlanningTestCase(BaseTest):
         edit_plan_view = plans_view.create_new_plan()
         assert edit_plan_view.plan_information_is_ok()
         current_view = edit_plan_view.close()
-        assert isinstance(current_view, PlansListView)
+        assert '#PlansList' in current_view.driver.current_url
 
     # def test_edit_new_plan_1(self):  # 2) Сценарий «Редактирования Нового плана»  - 1 способ
     #     plans_view = self.current_view.navigate_plans_list_view()
