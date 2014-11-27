@@ -44,7 +44,9 @@ class EditPlanView(BaseView):
         wait_until_extjs(self.driver, 10)
 
     def save_plan(self):
-        pass
+        self.driver.find_element_by_xpath("//span[contains(@class, 'edit-plan-save-btn')]/ancestor::a").click()
+        self.click_save_btn_warning()
+        wait_until_extjs(self.driver, 10)
 
     def change_plan(self):
         info_form = self.get_info_form()
@@ -56,6 +58,7 @@ class EditPlanView(BaseView):
         BaseView.current_plan = new_plan
         self.click_save_btn_warning()
         self.click_ok_btn_info()
+        wait_until_extjs(self.driver, 10)
 
     def get_info_form(self):
         self.driver.find_element_by_css_selector('a[data-qtip="Информация о плане"]').click()

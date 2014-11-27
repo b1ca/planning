@@ -19,15 +19,14 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.close_not_saved_and_save()
         assert plans_view.have_changed_plan()
 
-    # def test_edit_new_plan_2_way(self):  # 3) Сценарий «Редактирования Нового плана»  - 2 способ
-    #     plans_view = self.current_view.navigate_plans_list_view()
-    #     edit_plan_view = plans_view.create_plan()
-    #     edit_plan_view.change_plan()
-    #     edit_plan_view.save_btn_click()
-    #     edit_plan_view.save_plan()
-    #     plans_view = edit_plan_view.navigate_plans_list_view()
-    #     assert plans_view.have_changed_plan()
-    #
+    def test_edit_new_plan_2_way(self):  # 3) Сценарий «Редактирования Нового плана»  - 2 способ
+        plans_view = self.current_view.navigate_plans_list_view()
+        edit_plan_view = plans_view.create_new_plan()
+        edit_plan_view.change_plan()
+        edit_plan_view.save_plan()
+        plans_view = edit_plan_view.navigate_plans_list_view()
+        assert plans_view.have_changed_plan()
+
     # def test_edit_new_plan_3_way(self):  # 4) Сценарий «Редактирования Нового плана»  - 3 способ
     #     plans_view = self.current_view.navigate_plans_list_view()
     #     edit_plan_view = plans_view.create_plan()

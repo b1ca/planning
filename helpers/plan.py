@@ -67,6 +67,7 @@ class Plan(object):
         plan_form = self.form
         plan_form.find_element_by_xpath("//input[@name='CalendarId']/ancestor::tr//div[@role='button']").click()
         wait_until_extjs(self.driver, 10)
+        time.sleep(1)
         calendar_list = self.driver.find_elements_by_xpath("//li[@class='x-boundlist-item']")
         calendar = random.choice(calendar_list)
         self.calendar = calendar.get_attribute('innerHTML')
