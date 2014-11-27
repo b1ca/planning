@@ -38,8 +38,8 @@ class PlansListView(BaseView):
         print result
         return all(result)
 
-    def navigate_edit_plan_view(self):
-        t = self.current_plan.title
+    def navigate_edit_plan_view(self, title=None):
+        t = title or self.current_plan.title
         edit_btn = self.driver.find_element_by_xpath(
             "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//img[contains(@class,'edit')][@role='button']" % t)
         ActionChains(self.driver).move_to_element(edit_btn).click(edit_btn).perform()
@@ -129,3 +129,12 @@ class EditPlanView(BaseView):
     def click_save_plan_btn_on_close(self):
         self.driver.find_element_by_xpath("//div[contains(@class, 'x-message-box')]//span[.='Да']/ancestor::a").click()
         wait_until_extjs(self.driver, 10)
+
+    def add_task(self, number_of_tasks):
+        add_task_btn = self.driver.find_element_by_xpath("//span[contains(@class, 'edit-plan-plus-btn')]/ancestor::a")
+        for i in range(1, number_of_tasks+1):
+            add_task_btn.click()
+            wait_until_extjs(self.driver, 10)
+            task_title = lambda driver: driver.find_element_by_xpath(
+                "//span[.='Новая задача']/ancestor::td[@role='gridcell']")
+            ActionChains(self.driver).double_click(task_title(self.driver)).send_keys(str(i)).perform()

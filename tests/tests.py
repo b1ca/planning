@@ -37,12 +37,26 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.navigate_plans_list_view()
         assert plans_view.have_changed_plan()
 
-    # def test_add_task_to_new_plan(self):  # 5) Сценарий «Добавление задачи в новый план»
-    #     pass
-    #
-    # def test_add_several_tasks_to_new_plan(self):  # 6) Сценарий «Добавления нескольких задач для плана»
-    #     pass
-    #
+    def test_add_task_to_new_plan(self):  # 5) Сценарий «Добавление задачи в новый план»
+        plans_view = self.current_view.navigate_plans_list_view()
+        # edit_plan_view = plans_view.create_new_plan()
+        edit_plan_view = plans_view.navigate_edit_plan_view(title='plan_title_1417092563755')
+        edit_plan_view.add_task(number_of_tasks=2)
+        edit_plan_view.save_plan()
+        # plans_view = edit_plan_view.close()
+        # plan_view = plans_view.navigate_view_plan_view()
+        # assert plan_view.have_task(number_of_tasks=1)
+
+    def test_add_several_tasks_to_new_plan(self):  # 6) Сценарий «Добавления нескольких задач для плана»
+        plans_view = self.current_view.navigate_plans_list_view()
+        # edit_plan_view = plans_view.create_new_plan()
+        edit_plan_view = plans_view.navigate_edit_plan_view(title='plan_title_1417092563755')
+        edit_plan_view.add_task(number_of_tasks=2)
+        edit_plan_view.save_plan()
+        plans_view = edit_plan_view.close()
+        plan_view = plans_view.navigate_view_plan_view()
+        assert plan_view.have_task(number_of_tasks=2)
+
     # def test_edit_added_task(self):  # 7) Сценарий «Редактирования добавленной задачи в план»
     #     pass
     #
