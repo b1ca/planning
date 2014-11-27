@@ -27,17 +27,16 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.navigate_plans_list_view()
         assert plans_view.have_changed_plan()
 
-    # def test_edit_new_plan_3_way(self):  # 4) Сценарий «Редактирования Нового плана»  - 3 способ
-    #     plans_view = self.current_view.navigate_plans_list_view()
-    #     edit_plan_view = plans_view.create_plan()
-    #     plans_view = edit_plan_view.close()
-    #     edit_plan_view = plans_view.navigate_edit_view()
-    #     edit_plan_view.change_plan()
-    #     edit_plan_view.save_btn_click()
-    #     edit_plan_view.save_plan()
-    #     plans_view = edit_plan_view.navigate_plans_list_view()
-    #     assert plans_view.have_changed_plan()
-    #
+    def test_edit_new_plan_3_way(self):  # 4) Сценарий «Редактирования Нового плана»  - 3 способ
+        plans_view = self.current_view.navigate_plans_list_view()
+        edit_plan_view = plans_view.create_new_plan()
+        plans_view = edit_plan_view.close()
+        edit_plan_view = plans_view.navigate_edit_plan_view()
+        edit_plan_view.change_plan()
+        edit_plan_view.save_plan()
+        plans_view = edit_plan_view.navigate_plans_list_view()
+        assert plans_view.have_changed_plan()
+
     # def test_add_task_to_new_plan(self):  # 5) Сценарий «Добавление задачи в новый план»
     #     pass
     #

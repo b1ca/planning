@@ -1,6 +1,8 @@
 # coding=utf-8
 from __future__ import unicode_literals
 import time
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import ActionChains
 from helpers.plan import Plan
 from views.base_view import BaseView
 from helpers.waits import wait_until_extjs, wait_until_url_contains
@@ -36,6 +38,19 @@ class PlansListView(BaseView):
         print result
         return all(result)
 
+    def navigate_edit_plan_view(self):
+        t = self.current_plan.title
+        edit_btn = self.driver.find_element_by_xpath(
+            "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//img[contains(@class,'edit')][@role='button']" % t)
+        ActionChains(self.driver).move_to_element(edit_btn).click(edit_btn).perform()
+        self.click_go_btn_warning()
+        return EditPlanView(self.driver)
+
+    def click_go_btn_warning(self):
+        self.driver.find_element_by_xpath(
+            "//div[contains(@class, 'x-message-box')]//span[.='Перейти к редактированию']/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
+
 
 class EditPlanView(BaseView):
     def __init__(self, driver):
@@ -44,8 +59,14 @@ class EditPlanView(BaseView):
         wait_until_extjs(self.driver, 10)
 
     def save_plan(self):
-        self.driver.find_element_by_xpath("//span[contains(@class, 'edit-plan-save-btn')]/ancestor::a").click()
-        self.click_save_btn_warning()
+        edit_plan_save_btn = lambda driver: driver.find_element_by_xpath(
+            "//span[contains(@class, 'edit-plan-save-btn')]/ancestor::a")
+        try:
+            edit_plan_save_btn(self.driver).click()
+            self.click_save_btn_warning()
+        except NoSuchElementException:
+            edit_plan_save_btn(self.driver).click()
+            self.click_save_btn_warning()
         wait_until_extjs(self.driver, 10)
 
     def change_plan(self):
