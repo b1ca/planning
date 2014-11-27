@@ -23,12 +23,14 @@ class BaseTest(unittest.TestCase):
     driver = None
     current_view = None
 
-    @classmethod
-    def setUpClass(cls):
-        cls.driver = webdriver.Firefox()
-        cls.driver.maximize_window()
+    # @classmethod
+    # def setUpClass(cls):
+    #     cls.driver = webdriver.Firefox()
+    #     cls.driver.maximize_window()
 
     def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.driver.maximize_window()
         self.driver.implicitly_wait(20)
         login_page = LoginPage(self.driver)
         login_page.navigate()
@@ -37,11 +39,13 @@ class BaseTest(unittest.TestCase):
     def tearDown(self):
         if sys.exc_info()[0]:
             self.get_screenshot()
+        if 'debug' not in config and self.driver:
+            self.driver.quit()
 
-    @classmethod
-    def tearDownClass(cls):
-        if 'debug' not in config and cls.driver:
-            cls.driver.quit()
+    # @classmethod
+    # def tearDownClass(cls):
+    #     if 'debug' not in config and cls.driver:
+    #         cls.driver.quit()
 
     def get_screenshot(self):
         """
@@ -59,7 +63,6 @@ class BaseTest(unittest.TestCase):
         file_name = "%s/%s - %s.png" % (directory, time_now, method_name)
 
         self.driver.get_screenshot_as_file(file_name)
-        # for jenkins integration
         print "[[ATTACHMENT|%s]]" % file_name
         print "current url - %s" % self.driver.current_url
 
