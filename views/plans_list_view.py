@@ -7,6 +7,11 @@ from helpers.waits import wait_until_extjs, wait_until_url_contains
 
 
 class PlansListView(BaseView):
+    def __init__(self, driver):
+        BaseView.__init__(self, driver)
+        wait_until_url_contains(self.driver, 10, 'PlansList')
+        wait_until_extjs(self.driver, 10)
+
     def get_new_plan_form(self):
         self.driver.find_element_by_xpath("//span[.='Новый план']/ancestor::a").click()
         return self.get_form_by_title('Создать новый план')
@@ -19,6 +24,17 @@ class PlansListView(BaseView):
         plan.fill_form()
         BaseView.current_plan = plan
         return EditPlanView(self.driver)
+
+    def have_changed_plan(self):
+        records = self.driver.find_elements_by_xpath(
+            "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//div" % self.current_plan.title)
+        result = [
+            records[2].text == self.current_plan.title,
+            records[3].text == self.current_plan.description,
+            self.current_plan.task.startswith(records[5].text),
+        ]
+        print result
+        return all(result)
 
 
 class EditPlanView(BaseView):
@@ -38,6 +54,8 @@ class EditPlanView(BaseView):
         new_plan.modify()
         new_plan.fill_form()
         BaseView.current_plan = new_plan
+        self.click_save_btn_warning()
+        self.click_ok_btn_info()
 
     def get_info_form(self):
         self.driver.find_element_by_css_selector('a[data-qtip="Информация о плане"]').click()
@@ -64,3 +82,21 @@ class EditPlanView(BaseView):
     def close(self):
         self.driver.find_element_by_css_selector('span.x-tab-close-btn').click()
         return PlansListView(self.driver)
+
+    def close_not_saved_and_save(self):
+        self.driver.find_element_by_css_selector('span.x-tab-close-btn').click()
+        self.click_save_plan_btn_on_close()
+        return PlansListView(self.driver)
+
+    def click_save_btn_warning(self):
+        self.driver.find_element_by_xpath(
+            "//div[contains(@class, 'x-message-box')]//span[.='Сохранить']/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
+
+    def click_ok_btn_info(self):
+        self.driver.find_element_by_xpath("//div[contains(@class, 'x-message-box')]//span[.='OK']/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
+
+    def click_save_plan_btn_on_close(self):
+        self.driver.find_element_by_xpath("//div[contains(@class, 'x-message-box')]//span[.='Да']/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
