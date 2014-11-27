@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import unicode_literals
 import time
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotVisibleException
 from selenium.webdriver import ActionChains
 from helpers.plan import Plan
 from views.base_view import BaseView
@@ -108,8 +108,13 @@ class EditPlanView(BaseView):
         return PlansListView(self.driver)
 
     def close_not_saved_and_save(self):
-        self.driver.find_element_by_css_selector('span.x-tab-close-btn').click()
-        self.click_save_plan_btn_on_close()
+        close_btn = lambda driver: driver.find_element_by_css_selector('span.x-tab-close-btn')
+        try:
+            close_btn(self.driver).click()
+            self.click_save_plan_btn_on_close()
+        except ElementNotVisibleException:
+            close_btn(self.driver).click()
+            self.click_save_plan_btn_on_close()
         return PlansListView(self.driver)
 
     def click_save_btn_warning(self):
