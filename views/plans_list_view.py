@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+import time
 from helpers.plan import Plan
 from views.base_view import BaseView
 from helpers.waits import wait_until_extjs, wait_until_url_contains
@@ -40,6 +41,7 @@ class EditPlanView(BaseView):
 
     def get_info_form(self):
         self.driver.find_element_by_css_selector('a[data-qtip="Информация о плане"]').click()
+        time.sleep(1)
         return self.get_form_by_title('Информация о плане')
 
     def plan_information_is_ok(self):
