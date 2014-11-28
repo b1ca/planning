@@ -4,6 +4,7 @@ import time
 from selenium.common.exceptions import NoSuchElementException, ElementNotVisibleException
 from selenium.webdriver import ActionChains
 from helpers.plan import Plan
+from helpers.task import ChangedTask
 from views.base_view import BaseView
 from helpers.waits import wait_until_extjs, wait_until_url_contains
 
@@ -173,6 +174,46 @@ class EditPlanView(BaseView):
         resource = [el for el in self.driver.find_elements_by_xpath(long_xpath) if el.size]
         ActionChains(self.driver).double_click(resource[0]).perform()
 
+    def change_task(self):
+        title = self.change_title()
+        resource = self.change_resource()
+        #TODO
+        BaseView.changed_task = ChangedTask(title, resource, '', '')
+
+    def change_title(self):
+        name_cell = self.driver.find_element_by_xpath(
+            "//tr[@data-recordindex='0']/td[contains(@class, 'namecell')]/div")
+        title = '_'.join([name_cell, 'edited'])
+        ActionChains(self.driver).double_click(name_cell).perform()
+        name_input = self.driver.find_element_by_css_selector("input[name='Name']")
+        name_input.clear()
+        name_input.send_keys(title)
+        return title
+
+    def change_resource(self):
+        resource_cell = self.driver.find_element_by_xpath(
+            "//tr[@data-recordindex='0']/td[contains(@class, 'resourcecell')]/div")
+        ActionChains(self.driver).double_click(resource_cell).perform()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath("//span[.='Избранное']/ancestor::a").click()
+        long_xpath = ("//div[contains(@id, 'tabpanel')][contains(@class, 'x-window-item')]"
+                      "//tr[@data-recordindex='0']"
+                      "//div[@class='x-grid-cell-inner ']")
+        resources = [el for el in self.driver.find_elements_by_xpath(long_xpath) if el.size]
+        resource = resources[0].text
+        ActionChains(self.driver).double_click(resource).perform()
+        return resource
+
+    def change_start_date(self):
+        start_date_cell = self.driver.find_element_by_xpath(
+            "//tr[@data-recordindex='0']/td[contains(@class, 'startdate')]/div")
+        #TODO
+
+    def change_end_date(self):
+        end_date_cell = self.driver.find_element_by_xpath(
+            "//tr[@data-recordindex='0']/td[contains(@class, 'enddate')]/div")
+        #TODO
+
 
 class ViewPlanView(BaseView):
     def __init__(self, driver):
@@ -189,5 +230,13 @@ class ViewPlanView(BaseView):
             resource_cell = self.driver.find_element_by_xpath(
                 "//tr[@data-recordindex='%s']/td[contains(@class, 'resourcecell')]/div" % str(i-1))
             result.append(bool(resource_cell.text))
+        print result
+        return all(result)
+
+    def have_changed_task(self):
+        changed_task = self.changed_task
+        result = [
+
+        ]
         print result
         return all(result)
