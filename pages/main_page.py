@@ -12,7 +12,7 @@ class MainPage(BasePage):
 
     def navigate_plans_list_view(self):
         self.driver.find_element_by_xpath("//span[.='Список планов']/ancestor::a").click()
-        from views.plans_list_view import PlansListView
+        from views.plans_views import PlansListView
 
         return PlansListView(self.driver)
 
