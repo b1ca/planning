@@ -18,7 +18,7 @@ class Plan(object):
         self.calendar = None
         self.task = None
         self.date = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%d.%m.%Y')
-        self.time = '00:00'
+        self.time = '18:00'
         self.modified = False
         self.form = None
 
@@ -52,8 +52,7 @@ class Plan(object):
 
     def fill_time(self):
         plan_form = self.form
-        plan_form.find_element_by_xpath("//table[contains(@id,'timefield')]//div[@role='button']").click()
-        plan_form.find_element_by_xpath("//li[contains(@class,'x-boundlist-item')][.='%s']" % self.time).click()
+        plan_form.find_element_by_xpath("//input[contains(@id,'timefield')]").send_keys(self.time)
 
     def click_create_plan_btn(self):
         self.form.find_element_by_xpath("//span[.='Создать']/ancestor::a").click()
