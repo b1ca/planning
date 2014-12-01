@@ -5,6 +5,7 @@ from selenium.common.exceptions import NoSuchElementException, ElementNotVisible
 from selenium.webdriver import ActionChains
 from helpers.plan import Plan
 from helpers.task import ChangedTask
+from views.archive_view import ArchiveView
 from views.base_view import BaseView
 from helpers.waits import wait_until_extjs, wait_until_url_contains
 
@@ -28,17 +29,6 @@ class PlansListView(BaseView):
         BaseView.current_plan = plan
         return EditPlanView(self.driver)
 
-    def have_changed_plan(self):
-        records = self.driver.find_elements_by_xpath(
-            "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//div" % self.current_plan.title)
-        result = [
-            records[2].text == self.current_plan.title,
-            records[3].text == self.current_plan.description,
-            self.current_plan.task.startswith(records[5].text),
-        ]
-        print result
-        return all(result)
-
     def navigate_edit_plan_view(self, title=None):
         t = title or self.current_plan.title
         edit_btn = self.driver.find_element_by_xpath(
@@ -49,7 +39,8 @@ class PlansListView(BaseView):
 
     def click_go_btn_warning(self):
         self.driver.find_element_by_xpath(
-            "//div[contains(@class, 'x-message-box')]//span[contains(.,'Перейти к')]/ancestor::a").click()
+            "//div[contains(@class, 'x-message-box')]//span[contains(.,'Перейти к')]/ancestor::a |"
+            "//div[contains(@class, 'x-message-box')]//span[contains(.,'Переместить в')]/ancestor::a").click()
         wait_until_extjs(self.driver, 10)
 
     def navigate_view_plan_view(self, title=None):
@@ -61,6 +52,26 @@ class PlansListView(BaseView):
         ActionChains(self.driver).move_to_element(archive_btn).click(view_btn).perform()
         self.click_go_btn_warning()
         return ViewPlanView(self.driver)
+
+    def move_plan_to_archive(self, title=None):
+        wait_until_extjs(self.driver, 10)
+        t = title or self.current_plan.title
+        btn_xpath = "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//img[contains(@class,'%s')][@role='button']"
+        archive_btn = self.driver.find_element_by_xpath(btn_xpath % (t, 'archive'))
+        ActionChains(self.driver).move_to_element(archive_btn).click(archive_btn).perform()
+        self.click_go_btn_warning()
+        return ArchiveView(self.driver)
+
+    def have_changed_plan(self):
+        records = self.driver.find_elements_by_xpath(
+            "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//div" % self.current_plan.title)
+        result = [
+            records[2].text == self.current_plan.title,
+            records[3].text == self.current_plan.description,
+            self.current_plan.task.startswith(records[5].text),
+        ]
+        print result
+        return all(result)
 
 
 class EditPlanView(BaseView):
@@ -75,9 +86,11 @@ class EditPlanView(BaseView):
         try:
             edit_plan_save_btn(self.driver).click()
             self.click_save_btn_warning()
+            self.click_ok_btn_info()
         except NoSuchElementException:
             edit_plan_save_btn(self.driver).click()
             self.click_save_btn_warning()
+            self.click_ok_btn_info()
         wait_until_extjs(self.driver, 10)
 
     def change_plan(self):
@@ -115,6 +128,7 @@ class EditPlanView(BaseView):
         return all(result)
 
     def close(self):
+        wait_until_extjs(self.driver, 10)
         self.driver.find_element_by_css_selector('span.x-tab-close-btn').click()
         return PlansListView(self.driver)
 
@@ -242,6 +256,27 @@ class EditPlanView(BaseView):
         self.driver.find_element_by_css_selector('.sch-simple-timeheader').click()
         time.sleep(1)
         return end_date
+
+    def publish_plan(self):
+        """
+        edit_plan_view = plans_view.create_new_plan()
+        edit_plan_view.add_task(number_of_tasks=1)
+        edit_plan_view.save_plan()
+        edit_plan_view.publish_plan()
+        plans_view = edit_plan_view.close()
+        """
+        time.sleep(2)
+        publish_btn = self.driver.find_element_by_xpath("//span[contains(@class, 'edit-plan-doc-btn')]/ancestor::a")
+        publish_btn.click()
+        self.click_publish_btn_warning()
+
+    def click_publish_btn_warning(self):
+        self.driver.find_element_by_xpath(
+            "//div[contains(@class, 'x-message-box')]//span[.='Опубликовать']/ancestor::a").click()
+        wait_until_extjs(self.driver, 5)
+        self.driver.find_elements_by_xpath("//span[.='Опубликовать']/ancestor::a")[-1].click()
+        wait_until_extjs(self.driver, 10)
+        self.click_ok_btn_info()
 
 
 class ViewPlanView(BaseView):

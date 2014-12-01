@@ -94,3 +94,6 @@ class Plan(object):
         self.title, self.description = map(lambda x: '_'.join([x, 'edited']), [self.title, self.description])
         self.date = (datetime.datetime.now() + datetime.timedelta(days=2)).strftime('%d.%m.%Y')
         self.modified = True
+
+    def __str__(self):
+        return str(self.__dict__)
