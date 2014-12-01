@@ -56,9 +56,9 @@ class PlansListView(BaseView):
         wait_until_extjs(self.driver, 10)
         t = title or self.current_plan.title
         btn_xpath = "//div[.='%s']/ancestor::tr[contains(@id, 'record')]//img[contains(@class,'%s')][@role='button']"
-        edit_btn = self.driver.find_element_by_xpath(btn_xpath % (t, 'edit'))
+        archive_btn = self.driver.find_element_by_xpath(btn_xpath % (t, 'archive'))
         view_btn = self.driver.find_element_by_xpath(btn_xpath % (t, 'view'))
-        ActionChains(self.driver).move_to_element(edit_btn).click(view_btn).perform()
+        ActionChains(self.driver).move_to_element(archive_btn).click(view_btn).perform()
         self.click_go_btn_warning()
         return ViewPlanView(self.driver)
 
@@ -177,17 +177,20 @@ class EditPlanView(BaseView):
     def change_task(self):
         title = self.change_title()
         resource = self.change_resource()
-        #TODO
-        BaseView.changed_task = ChangedTask(title, resource, '', '')
+        start_date = self.change_start_date()
+        end_date = self.change_end_date()
+        BaseView.current_plan.changed_task = ChangedTask(title, resource, start_date, end_date)
 
     def change_title(self):
         name_cell = self.driver.find_element_by_xpath(
             "//tr[@data-recordindex='0']/td[contains(@class, 'namecell')]/div")
-        title = '_'.join([name_cell, 'edited'])
+        title = '_'.join([name_cell.text, 'edited'])
         ActionChains(self.driver).double_click(name_cell).perform()
         name_input = self.driver.find_element_by_css_selector("input[name='Name']")
         name_input.clear()
         name_input.send_keys(title)
+        self.driver.find_element_by_css_selector('.sch-simple-timeheader').click()
+        time.sleep(1)
         return title
 
     def change_resource(self):
@@ -197,22 +200,48 @@ class EditPlanView(BaseView):
         wait_until_extjs(self.driver, 10)
         self.driver.find_element_by_xpath("//span[.='Избранное']/ancestor::a").click()
         long_xpath = ("//div[contains(@id, 'tabpanel')][contains(@class, 'x-window-item')]"
-                      "//tr[@data-recordindex='0']"
+                      "//tr[@data-recordindex='1']"
                       "//div[@class='x-grid-cell-inner ']")
         resources = [el for el in self.driver.find_elements_by_xpath(long_xpath) if el.size]
         resource = resources[0].text
-        ActionChains(self.driver).double_click(resource).perform()
+        ActionChains(self.driver).double_click(resources[0]).perform()
+        self.driver.find_element_by_css_selector('.sch-simple-timeheader').click()
+        time.sleep(1)
         return resource
 
     def change_start_date(self):
         start_date_cell = self.driver.find_element_by_xpath(
             "//tr[@data-recordindex='0']/td[contains(@class, 'startdate')]/div")
-        #TODO
+        start_date_text = start_date_cell.text
+        ActionChains(self.driver).move_to_element(start_date_cell).perform()
+        start_date_minutes = start_date_text.split(':')[-1]
+        start_date_minutes = ''.join([start_date_minutes[:-1], '4'])
+        start_date = ':'.join([start_date_text.split(':')[0], start_date_minutes])
+        print 'start - %s' % start_date
+        ActionChains(self.driver).double_click(start_date_cell).perform()
+        start_date_input = self.driver.find_element_by_xpath("//table[contains(@id, 'startdate')]//input")
+        start_date_input.clear()
+        start_date_input.send_keys(start_date)
+        self.driver.find_element_by_css_selector('.sch-simple-timeheader').click()
+        time.sleep(1)
+        return start_date
 
     def change_end_date(self):
         end_date_cell = self.driver.find_element_by_xpath(
             "//tr[@data-recordindex='0']/td[contains(@class, 'enddate')]/div")
-        #TODO
+        end_date_text = end_date_cell.text
+        ActionChains(self.driver).move_to_element(end_date_cell).perform()
+        end_date_minutes = end_date_text.split(':')[-1]
+        end_date_minutes = ''.join([end_date_minutes[:-1], '6'])
+        end_date = ':'.join([end_date_text.split(':')[0], end_date_minutes])
+        print 'end - %s' % end_date
+        ActionChains(self.driver).double_click(end_date_cell).perform()
+        end_date_input = self.driver.find_element_by_xpath("//table[contains(@id, 'enddate')]//input")
+        end_date_input.clear()
+        end_date_input.send_keys(end_date)
+        self.driver.find_element_by_css_selector('.sch-simple-timeheader').click()
+        time.sleep(1)
+        return end_date
 
 
 class ViewPlanView(BaseView):
@@ -234,9 +263,13 @@ class ViewPlanView(BaseView):
         return all(result)
 
     def have_changed_task(self):
-        changed_task = self.changed_task
+        xpath = "//tr[@data-recordindex='0']/td[contains(@class, '%s')]/div"
+        changed_task = self.current_plan.changed_task
         result = [
-
+            self.driver.find_element_by_xpath(xpath % 'namecell').text == changed_task.title,
+            changed_task.resource in self.driver.find_element_by_xpath(xpath % 'resourcecell').text,
+            self.driver.find_element_by_xpath(xpath % 'startdate').text == changed_task.start_date,
+            self.driver.find_element_by_xpath(xpath % 'enddate').text == changed_task.end_date
         ]
         print result
         return all(result)

@@ -21,6 +21,10 @@ class Plan(object):
         self.time = '18:00'
         self.modified = False
         self.form = None
+        self.changed_task = None
+        """
+        @type changed_task: ChangedTask
+        """
 
     def set_form(self, plan_form):
         self.form = plan_form
@@ -46,11 +50,12 @@ class Plan(object):
     def fill_date(self):
         plan_form = self.form
         plan_form.find_element_by_xpath("//table[contains(@id,'datefield')]//div[@role='button']").click()
-        date = self.date.split('.')[0]
+        date = self.date.split('.')[0].lstrip('0')
         plan_form.find_element_by_xpath(
             "//td[not(contains(@class, 'disabled'))]/a[@class='x-datepicker-date'][.='%s']" % date).click()
 
     def fill_time(self):
+        wait_until_extjs(self.driver, 10)
         plan_form = self.form
         plan_form.find_element_by_xpath("//input[contains(@id,'timefield')]").send_keys(self.time)
 

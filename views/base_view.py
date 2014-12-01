@@ -10,10 +10,6 @@ class BaseView(object):
     """
     @type current_plan: Plan
     """
-    changed_task = None
-    """
-    @type changed_task: ChangedTask
-    """
 
     def __init__(self, driver):
         self.driver = driver

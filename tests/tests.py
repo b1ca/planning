@@ -57,12 +57,11 @@ class PlanningTestCase(BaseTest):
 
     def test_edit_added_task(self):  # 7) Сценарий «Редактирования добавленной задачи в план»
         plans_view = self.current_view.navigate_plans_list_view()
-        # edit_plan_view = plans_view.create_new_plan()
-        # edit_plan_view.add_task(number_of_tasks=1)
-        # edit_plan_view.save_plan()
-        # plans_view = edit_plan_view.close()
-        #TODO
-        edit_plan_view = plans_view.navigate_edit_plan_view('plan_title_1417176782492')
+        edit_plan_view = plans_view.create_new_plan()
+        edit_plan_view.add_task(number_of_tasks=1)
+        edit_plan_view.save_plan()
+        plans_view = edit_plan_view.close()
+        edit_plan_view = plans_view.navigate_edit_plan_view()  # plan_title_1417419154272
         edit_plan_view.change_task()
         edit_plan_view.save_plan()
         plans_view = edit_plan_view.close()
