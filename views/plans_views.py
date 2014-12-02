@@ -18,15 +18,21 @@ class PlansListView(BaseView):
         wait_until_url_contains(self.driver, 10, 'PlansList')
         wait_until_extjs(self.driver, 10)
 
-    def get_new_plan_form(self):
-        self.driver.find_element_by_xpath("//span[.='Новый план']/ancestor::a").click()
-        return self.get_form_by_title('Создать новый план')
+    def get_new_plan_form(self, from_template=None):
+        plan_type, form_title = 'Новый план', 'Создать новый план'
+        if from_template:
+            plan_type, form_title = 'Из шаблона', 'Создать новый план из шаблона'
+        self.driver.find_element_by_xpath("//span[.='%s']/ancestor::a" % plan_type).click()
+        return self.get_form_by_title(form_title)
 
-    def create_new_plan(self):
-        plan_form = self.get_new_plan_form()
+    def create_new_plan(self, from_template=None):
+        plan_form = self.get_new_plan_form(from_template)
         plan = Plan(self.driver)
         plan.set_form(plan_form)
-        plan.get_calendar_and_task()
+        if not from_template:
+            plan.get_calendar_and_task()
+        else:
+            plan.get_template_and_task()
         plan.fill_form()
         BaseView.current_plan = plan
         return EditPlanView(self.driver)
@@ -81,7 +87,7 @@ class PlansListView(BaseView):
         return MonitoringView(self.driver)
 
     def download_plan_is_ok(self):
-        title = self.get_first_plan_title()
+        title = self.get_first_plan().text
         self.driver.find_element_by_xpath(
             "//div[.='%s']/ancestor::tr[contains(@id, 'record')]"
             "//img[contains(@class,'mpp-plan-action')][@role='button']" % title).click()
@@ -97,9 +103,14 @@ class PlansListView(BaseView):
                 continue
         return xml_is_not_empty
 
-    def get_first_plan_title(self):
+    def get_first_plan(self):
         return self.driver.find_element_by_xpath(
-            "//div[contains(@id, 'PlansView')]//tr[@data-recordindex='0']/td[@data-qtip]").text
+            "//div[contains(@id, 'PlansView')]//tr[@data-recordindex='0']/td[@data-qtip]")
+
+    def get_plan_type(self):
+        first_plan = self.get_first_plan()
+        plan_type = first_plan.find_elements_by_xpath("/ancestor::tr/td")[2].get_attribute('class')
+        return plan_type
 
 
 class EditPlanView(BaseView):

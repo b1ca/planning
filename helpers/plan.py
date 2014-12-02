@@ -17,6 +17,7 @@ class Plan(object):
         self.description = 'cool description'
         self.calendar = None
         self.task = None
+        self.template = None
         self.date = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%d.%m.%Y')
         self.time = '18:00'
         self.modified = False
@@ -78,17 +79,32 @@ class Plan(object):
         ActionChains(self.driver).click(calendar).click(plan_form).perform()
         wait_until_extjs(self.driver, 10)
 
+        self.get_task(plan_form)
+
+    def get_task(self, plan_form):
         task_input_name = 'AssociatedTaskId' if 'EditPlan' not in self.driver.current_url else 'LinkTaskId'
         plan_form.find_element_by_xpath(
             "//input[@name='%s']/ancestor::tr//div[@role='button']" % task_input_name).click()
         time.sleep(2)
         task_list = self.driver.find_elements_by_xpath("//li[@class='x-boundlist-item']")
         task_list = [t for t in task_list if ':' in t.text]
-
         task = random.choice(task_list[:5])
         self.task = task.get_attribute('innerHTML')
         ActionChains(self.driver).click(task).click(plan_form).perform()
         wait_until_extjs(self.driver, 10)
+
+    def get_template_and_task(self):
+        plan_form = self.form
+        plan_form.find_element_by_xpath("//input[@name='ParentPlanId']/ancestor::tr//div[@role='button']").click()
+        wait_until_extjs(self.driver, 10)
+        time.sleep(1)
+        template_list = self.driver.find_elements_by_xpath("//li[@class='x-boundlist-item']")
+        template = random.choice(template_list)
+        self.template = template.get_attribute('innerHTML')
+        ActionChains(self.driver).click(template).click(plan_form).perform()
+        wait_until_extjs(self.driver, 10)
+
+        self.get_task(plan_form)
 
     def modify(self):
         self.title, self.description = map(lambda x: '_'.join([x, 'edited']), [self.title, self.description])

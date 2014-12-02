@@ -98,7 +98,10 @@ class PlanningTestCase(BaseTest):
         assert plans_view.download_plan_is_ok()
 
     def test_create_new_plan_with_template(self):  # 13) Сценарий «Создание плана из шаблона»
-        pass
+        plans_view = self.current_view.navigate_plans_list_view()
+        edit_plan_view = plans_view.create_new_plan(from_template=True)
+        plans_view = edit_plan_view.close()
+        assert 'draft' or 'template' in plans_view.get_plan_type()
 
     def test_add_resource_to_plan(self):  # 14) Сценарий «Добавления ресурсов плану»
         pass
