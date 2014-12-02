@@ -83,11 +83,8 @@ class PlanningTestCase(BaseTest):
         assert '#ViewPlan' in current_view.driver.current_url
 
     def test_view_plan_through_user(self):  # 10) Сценарий «Просмотр плана через пользователя»
-        plans_view = self.current_view.navigate_plans_list_view()
-        edit_plan_view = plans_view.create_new_plan()
-        edit_plan_view.add_task(number_of_tasks=1)
-        edit_plan_view.save_plan()
-        edit_plan_view.publish_plan()
-        plans_view = edit_plan_view.close()
-        users_view = plans_view.navigate_users_view()  # plan_title_1417445312123
+        users_view = self.current_view.navigate_users_view()
+        users_view.choose_user('Немиро')
+        current_view = users_view.navigate_view_plan_view()
+        assert '#ViewPlan' in current_view.driver.current_url
 
