@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals
+import os
 import time
 from selenium.common.exceptions import NoSuchElementException, ElementNotVisibleException
 from selenium.webdriver import ActionChains
@@ -8,6 +9,7 @@ from helpers.task import ChangedTask
 from views.archive_view import ArchiveView
 from views.base_view import BaseView
 from helpers.waits import wait_until_extjs, wait_until_url_contains
+from views.monitoring_view import MonitoringView
 
 
 class PlansListView(BaseView):
@@ -39,7 +41,7 @@ class PlansListView(BaseView):
 
     def click_go_btn_warning(self):
         self.driver.find_element_by_xpath(
-            "//div[contains(@class, 'x-message-box')]//span[contains(.,'Перейти к')]/ancestor::a |"
+            "//div[contains(@class, 'x-message-box')]//span[contains(.,'Перейти ')]/ancestor::a |"
             "//div[contains(@class, 'x-message-box')]//span[contains(.,'Переместить в')]/ancestor::a").click()
         wait_until_extjs(self.driver, 10)
 
@@ -72,6 +74,32 @@ class PlansListView(BaseView):
         ]
         print result
         return all(result)
+
+    def navigate_monitoring(self):
+        self.driver.find_element_by_xpath("//span[contains(@class, 'monitoring-report')]/ancestor::a").click()
+        self.click_go_btn_warning()
+        return MonitoringView(self.driver)
+
+    def download_plan_is_ok(self):
+        title = self.get_first_plan_title()
+        self.driver.find_element_by_xpath(
+            "//div[.='%s']/ancestor::tr[contains(@id, 'record')]"
+            "//img[contains(@class,'mpp-plan-action')][@role='button']" % title).click()
+        xml_file = str(''.join([title, '.xml']))
+        xml_is_not_empty = None
+        while True:
+            try:
+                xml_is_not_empty = os.path.getsize(xml_file) > 0
+                os.remove(xml_file)
+                break
+            except WindowsError:
+                time.sleep(1)
+                continue
+        return xml_is_not_empty
+
+    def get_first_plan_title(self):
+        return self.driver.find_element_by_xpath(
+            "//div[contains(@id, 'PlansView')]//tr[@data-recordindex='0']/td[@data-qtip]").text
 
 
 class EditPlanView(BaseView):

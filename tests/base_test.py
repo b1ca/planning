@@ -29,7 +29,13 @@ class BaseTest(unittest.TestCase):
     #     cls.driver.maximize_window()
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        profile = webdriver.FirefoxProfile()
+        profile.set_preference('browser.download.folderList', 2)
+        profile.set_preference('browser.download.manager.showWhenStarting', False)
+        profile.set_preference("browser.download.dir", os.getcwd())
+        profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'text/xml')
+
+        self.driver = webdriver.Firefox(profile)
         self.driver.maximize_window()
         self.driver.implicitly_wait(20)
         login_page = LoginPage(self.driver)

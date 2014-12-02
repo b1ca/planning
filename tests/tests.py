@@ -88,3 +88,30 @@ class PlanningTestCase(BaseTest):
         current_view = users_view.navigate_view_plan_view()
         assert '#ViewPlan' in current_view.driver.current_url
 
+    def test_plan_monitoring(self):  # 11) Сценарий «Мониторинг плана»
+        plans_view = self.current_view.navigate_plans_list_view()
+        current_view = plans_view.navigate_monitoring()
+        assert 'Monitoring' in current_view.driver.current_url
+
+    def test_download_plan_as_ms_project_xml(self):  # 12) Сценарий «Скачивание плана в формате MS Project (.XML)
+        plans_view = self.current_view.navigate_plans_list_view()
+        assert plans_view.download_plan_is_ok()
+
+    def test_create_new_plan_with_template(self):  # 13) Сценарий «Создание плана из шаблона»
+        pass
+
+    def test_add_resource_to_plan(self):  # 14) Сценарий «Добавления ресурсов плану»
+        pass
+
+    def test_report_formation(self):  # 15) Сценарий «Формирование рапорта к плану»
+        pass
+
+    def test_add_comment_to_task(self):  # 16) Сценарий «Добавления комментария к задаче плана»
+        pass
+
+    # 17) Сценарий «Фильтрации Списка планов по опубликованные»
+    # 18) Сценарий «Фильтрации Списка планов, показывать только шаблоны»
+    # 19) Сценарий «Фильтрации Списка планов, Показывать только черновики»
+    # 20) Сценарий «Фильтрации Списка планов, все планы»
+    def test_filters(self):
+        pass
