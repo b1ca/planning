@@ -117,4 +117,12 @@ class PlanningTestCase(BaseTest):
     # 19) Сценарий «Фильтрации Списка планов, Показывать только черновики»
     # 20) Сценарий «Фильтрации Списка планов, все планы»
     def test_filters(self):
-        pass
+        plans_view = self.current_view.navigate_plans_list_view()
+        plans_view.show('pub')
+        assert plans_view.on_page_shown('pub')
+        # plans_view.show('template')
+        # assert plans_view.on_page_shown('template')
+        # plans_view.show('draft')
+        # assert plans_view.on_page_shown('draft')
+        # plans_view.show('all')
+        # assert plans_view.on_page_shown('all')

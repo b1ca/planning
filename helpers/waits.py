@@ -1,3 +1,6 @@
+# coding=utf-8
+from __future__ import unicode_literals
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -18,3 +21,10 @@ def wait_until_text_present(driver, seconds_to_wait, locator, text):
 def wait_until_url_contains(driver, seconds_to_wait, url_part):
     url_contains = lambda x: url_part in driver.current_url
     WebDriverWait(driver, seconds_to_wait).until(url_contains)
+
+
+def wait_until_list_loading(driver, seconds_to_wait):
+    loading_xpath = "//div[contains(.,'Загрузка списка')][@style]"
+    WebDriverWait(driver, seconds_to_wait).until(
+        ec.invisibility_of_element_located((By.XPATH, loading_xpath))
+    )

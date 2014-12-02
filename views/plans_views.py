@@ -8,7 +8,7 @@ from helpers.plan import Plan
 from helpers.task import ChangedTask
 from views.archive_view import ArchiveView
 from views.base_view import BaseView
-from helpers.waits import wait_until_extjs, wait_until_url_contains
+from helpers.waits import wait_until_extjs, wait_until_url_contains, wait_until_list_loading
 from views.monitoring_view import MonitoringView
 
 
@@ -111,6 +111,31 @@ class PlansListView(BaseView):
         first_plan = self.get_first_plan()
         plan_type = first_plan.find_elements_by_xpath("/ancestor::tr/td")[2].get_attribute('class')
         return plan_type
+
+    def show(self, plan_type):
+        wait_until_list_loading(self.driver, 15)
+        if plan_type == 'template':
+            plan_type = 'tamplate'
+        if plan_type not in ['pub', 'tamplate', 'draft', 'all']:
+            raise Exception('wrong plan type.')
+        icon = self.driver.find_element_by_xpath(
+            "//span[contains(@class, '%s')]/ancestor::a[not(contains(@class, 'create'))]" % plan_type)
+        icon.click()
+        wait_until_list_loading(self.driver, 15)
+
+    def on_page_shown(self, plan_type):
+        if plan_type == 'pub':
+            plan_type = 'plan'
+        icons = self.driver.find_elements_by_xpath("//tr[@data-recordindex]/td[2]")
+        if plan_type != 'all':
+            result = [
+                plan_type in el.get_attribute('class')
+                for el in icons
+            ]
+            print result
+            return all(result)
+        else:
+            pass
 
 
 class EditPlanView(BaseView):
