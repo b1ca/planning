@@ -135,7 +135,7 @@ class PlansListView(BaseView):
             print result
             return all(result)
         else:
-            pass
+            return True
 
 
 class EditPlanView(BaseView):
