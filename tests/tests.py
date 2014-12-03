@@ -103,14 +103,14 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.close()
         assert 'draft' or 'template' in plans_view.get_plan_type()
 
-    def test_add_resource_to_plan(self):  # 14) Сценарий «Добавления ресурсов плану»
-        pass
-
-    def test_report_formation(self):  # 15) Сценарий «Формирование рапорта к плану»
-        pass
-
-    def test_add_comment_to_task(self):  # 16) Сценарий «Добавления комментария к задаче плана»
-        pass
+    # def test_add_resource_to_plan(self):  # 14) Сценарий «Добавления ресурсов плану»
+    #     pass
+    #
+    # def test_report_formation(self):  # 15) Сценарий «Формирование рапорта к плану»
+    #     pass
+    #
+    # def test_add_comment_to_task(self):  # 16) Сценарий «Добавления комментария к задаче плана»
+    #     pass
 
     # 17) Сценарий «Фильтрации Списка планов по опубликованные»
     # 18) Сценарий «Фильтрации Списка планов, показывать только шаблоны»
