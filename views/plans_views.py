@@ -15,7 +15,10 @@ from views.monitoring_view import MonitoringView
 class PlansListView(BaseView):
     def __init__(self, driver):
         BaseView.__init__(self, driver)
+        while 'PlansList' not in self.driver.current_url:
+            self.driver.find_element_by_xpath("//span[.='Список планов']/ancestor::a").click()
         wait_until_url_contains(self.driver, 10, 'PlansList')
+        wait_until_list_loading(self.driver, 10)
         wait_until_extjs(self.driver, 10)
 
     def get_new_plan_form(self, from_template=None):
