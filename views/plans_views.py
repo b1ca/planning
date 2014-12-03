@@ -98,8 +98,8 @@ class PlansListView(BaseView):
                 xml_is_not_empty = os.path.getsize(xml_file) > 0
                 os.remove(xml_file)
                 break
-            except WindowsError:
-                time.sleep(1)
+            except OSError:
+                time.sleep(2)
                 continue
         return xml_is_not_empty
 
