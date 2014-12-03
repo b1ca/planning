@@ -99,11 +99,11 @@ class PlansListView(BaseView):
         while True:
             try:
                 xml_is_not_empty = os.path.getsize(xml_file) > 0
-                os.remove(xml_file)
                 break
             except OSError:
                 time.sleep(2)
                 continue
+        os.remove(xml_file)
         return xml_is_not_empty
 
     def get_first_plan(self):
