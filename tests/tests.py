@@ -103,19 +103,10 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.close()
         assert 'draft' or 'template' in plans_view.get_plan_type()
 
-    # def test_add_resource_to_plan(self):  # 14) Сценарий «Добавления ресурсов плану»
-    #     pass
-    #
-    # def test_report_formation(self):  # 15) Сценарий «Формирование рапорта к плану»
-    #     pass
-    #
-    # def test_add_comment_to_task(self):  # 16) Сценарий «Добавления комментария к задаче плана»
-    #     pass
-
-    # 17) Сценарий «Фильтрации Списка планов по опубликованные»
-    # 18) Сценарий «Фильтрации Списка планов, показывать только шаблоны»
-    # 19) Сценарий «Фильтрации Списка планов, Показывать только черновики»
-    # 20) Сценарий «Фильтрации Списка планов, все планы»
+    # 14) Сценарий «Фильтрации Списка планов по опубликованные»
+    # 15) Сценарий «Фильтрации Списка планов, показывать только шаблоны»
+    # 16) Сценарий «Фильтрации Списка планов, Показывать только черновики»
+    # 17) Сценарий «Фильтрации Списка планов, все планы»
     def test_filters(self):
         plans_view = self.current_view.navigate_plans_list_view()
         plans_view.show('pub')
@@ -126,3 +117,35 @@ class PlanningTestCase(BaseTest):
         assert plans_view.on_page_shown('draft')
         plans_view.show('all')
         assert plans_view.on_page_shown('all')
+
+    def test_create_and_publish_plan(self):  # 18) Сценарий Создание и публикация плана
+        plans_view = self.current_view.navigate_plans_list_view()
+        edit_plan_view = plans_view.create_new_plan(timedelta=5)
+        edit_plan_view.add_task(number_of_tasks=1)
+        edit_plan_view.save_plan()
+        edit_plan_view.publish_plan()
+        plans_view = edit_plan_view.close()
+        assert plans_view.have_changed_plan()
+
+    def test_add_resource_and_publish_plan(self):  # 19) Сценарий  Добавления ресурса и публикация плана
+        plans_view = self.current_view.navigate_plans_list_view()
+        edit_plan_view = plans_view.create_new_plan(timedelta=5)
+        edit_plan_view.add_task(number_of_tasks=1)
+        edit_plan_view.save_plan()
+        edit_plan_view.add_resource_to_plan()
+        edit_plan_view.publish_plan()
+        plans_view = edit_plan_view.close()
+        assert plans_view.have_changed_plan()
+
+    def test_report_creation__tasks(self):  # 20) Сценарий Создания отчёта,  по задачам
+        pass
+
+    def test_report_creation__plan(self):  # 21) Сценарий Создания отчёта,  поплану
+        pass
+
+    def test_unpublish_report(self):  # 22) Сценарий снятии отчёта с публикации
+        pass
+
+    # 23) Создания плана с публикацией и Расширенными настройками доступа к плану.
+    def test_create_and_publish_plan_with_extended_prefs(self):
+        pass

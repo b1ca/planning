@@ -28,9 +28,16 @@ class PlansListView(BaseView):
         self.driver.find_element_by_xpath("//span[.='%s']/ancestor::a" % plan_type).click()
         return self.get_form_by_title(form_title)
 
-    def create_new_plan(self, from_template=None):
+    def create_new_plan(self, from_template=None, timedelta=None):
+        wait_until_list_loading(self.driver, 10)
+        wait_until_extjs(self.driver, 10)
         plan_form = self.get_new_plan_form(from_template)
         plan = Plan(self.driver)
+
+        if timedelta:
+            import datetime
+            plan.date = (datetime.datetime.now() + datetime.timedelta(days=timedelta)).strftime('%d.%m.%Y')
+
         plan.set_form(plan_form)
         if not from_template:
             plan.get_calendar_and_task()
@@ -344,6 +351,29 @@ class EditPlanView(BaseView):
         self.driver.find_elements_by_xpath("//span[.='Опубликовать']/ancestor::a")[-1].click()
         wait_until_extjs(self.driver, 10)
         self.click_ok_btn_info()
+
+    def add_resource_to_plan(self):
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath("//span[contains(@class, 'edit-plan-res-group-btn')]/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath("//span[contains(.,'Зарезервировать')]/ancestor::a").click()
+        time.sleep(2)
+        self.driver.find_element_by_xpath("//tr[contains(@id, 'record-ext-record')]//div").click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_elements_by_xpath("//tr[contains(@id, 'record-ext-record')]//div")[-1].click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_elements_by_xpath("//tr[contains(@id, 'record-ext-record')]//div")[-1].click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_elements_by_xpath("//tr[contains(@id, 'record-ext-record')]//div")[-1].click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath("//span[contains(.,'Получить список ресурсов')]/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath("//img[@data-qtip='Зарезервировать']").click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath(
+            "//span[contains(.,'Зарезервировать все')]/ancestor::div[1]"
+            "//span[contains(.,'Закрыть')]/ancestor::a").click()
+        wait_until_extjs(self.driver, 10)
 
 
 class ViewPlanView(BaseView):
