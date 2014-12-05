@@ -369,6 +369,20 @@ class EditPlanView(BaseView):
             "//span[contains(.,'Закрыть')]/ancestor::a").click()
         wait_until_extjs(self.driver, 10)
 
+    def add_extended_prefs(self):
+        self.driver.find_element_by_xpath("//a[@data-qtip='Расширенные настройки доступа к плану']").click()
+        time.sleep(4)
+        self.driver.find_elements_by_xpath("//span[.='РКВВ 1']")[-1].click()
+        self.driver.find_element_by_xpath("//img[contains(@class, 'action-column-button add-task')]").click()
+        wait_until_extjs(self.driver, 10)
+        self.driver.find_element_by_xpath(
+            "//tr[@data-recordindex='0']//div[contains(@class, 'checkcolumn')]").click()
+        self.driver.find_elements_by_xpath(
+            "//tr[@data-recordindex='0']//div[contains(@class, 'checkcolumn')]")[-1].click()
+        self.driver.find_elements_by_xpath("//span[.='Применить']/ancestor::a")[-1].click()
+        time.sleep(2)
+        self.driver.find_elements_by_xpath("//span[.='Закрыть']/ancestor::a")[-1].click()
+
 
 class ViewPlanView(BaseView):
     def __init__(self, driver):

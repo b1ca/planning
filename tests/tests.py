@@ -156,4 +156,13 @@ class PlanningTestCase(BaseTest):
 
     # 23) Создания плана с публикацией и Расширенными настройками доступа к плану.
     def test_create_and_publish_plan_with_extended_prefs(self):
-        pass
+        plans_view = self.current_view.navigate_plans_list_view()
+        import time
+        time.sleep(4)
+        edit_plan_view = plans_view.create_new_plan(timedelta=5)
+        edit_plan_view.add_task(number_of_tasks=1)
+        edit_plan_view.save_plan()
+        edit_plan_view.add_extended_prefs()
+        edit_plan_view.publish_plan()
+        plans_view = edit_plan_view.close()
+        assert plans_view.have_changed_plan()
