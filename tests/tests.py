@@ -137,14 +137,22 @@ class PlanningTestCase(BaseTest):
         plans_view = edit_plan_view.close()
         assert plans_view.have_changed_plan()
 
-    def test_report_creation__tasks(self):  # 20) Сценарий Создания отчёта,  по задачам
-        pass
+    def test_report_creation__performer(self):  # 20) Сценарий Создания отчёта,  по задачам
+        arm_view = self.current_view.navigate_arm_view()
+        arm_view.create_report("По исполнителям задач")
+        arm_view.publish_report()
+        assert arm_view.report_published()
 
     def test_report_creation__plan(self):  # 21) Сценарий Создания отчёта,  поплану
-        pass
+        arm_view = self.current_view.navigate_arm_view()
+        arm_view.create_report("По плану")
+        arm_view.publish_report()
+        assert arm_view.report_published()
 
     def test_unpublish_report(self):  # 22) Сценарий снятии отчёта с публикации
-        pass
+        arm_view = self.current_view.navigate_arm_view()
+        arm_view.unpublish_report()
+        assert arm_view.report_unpublished()
 
     # 23) Создания плана с публикацией и Расширенными настройками доступа к плану.
     def test_create_and_publish_plan_with_extended_prefs(self):

@@ -39,3 +39,9 @@ class MainPage(BasePage):
         from views.help_view import HelpView
 
         return HelpView(self.driver)
+
+    def navigate_arm_view(self):
+        self.driver.find_element_by_xpath("//span[.='АРМ Руководителя']/ancestor::a").click()
+        from views.arm_view import ARMView
+
+        return ARMView(self.driver)

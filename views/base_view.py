@@ -36,6 +36,9 @@ class BaseView(object):
     def navigate_help_view(self):
         return MainPage(self.driver).navigate_help_view()
 
+    def navigate_arm_view(self):
+        return MainPage(self.driver).navigate_arm_view()
+
     def get_form_by_title(self, title):
         wait_until_extjs(self.driver, 15)
         return self.driver.find_element_by_xpath(
